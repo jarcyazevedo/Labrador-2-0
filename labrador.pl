@@ -39,18 +39,26 @@ my $flags = {
 	
 };
 
-my $conf = new Config::Simple('labrador.conf');
+my $config = new Config::Simple('labrador.conf') or die "O arquivo de configuração labrador.conf não foi encontrado.";
 
-my $dir = $conf->param('dir');
+my %conf = $config->vars();
+#my $dir = $conf->param('dir');
 #my $dir = shift or die "especifique dir";
 #say "lendo dir '$dir'... ";
-find \&traverse, $dir;
+while ((my $key, my $value) = each(%conf)){
+	if($key =~ m/^[diretorio\.]/){
+		my $dir = $key;
+		$dir =~ s/\w+\.//;
+		#say $dir ." = ". $value;
 
-sub traverse{
-	#say $File::Find::name;
-	return if -d $File::Find::name;
+		find \&traverse, $dir;
 
-	my $container = Labrador::Container->new($File::Find::name, $flags);
+		sub traverse{
+			#say $File::Find::name;
+			return if -d $File::Find::name;
 
+			my $container = Labrador::Container->new($File::Find::name, $flags);
+		}
+	}
 }
 
