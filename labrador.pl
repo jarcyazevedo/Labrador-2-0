@@ -8,7 +8,6 @@ use lib "lib";
 use Labrador::Container;
 use File::Find;
 use Config::Simple;
-use DBI;
 
 my $flags = {
 	md5  => 0,
@@ -25,40 +24,37 @@ my $flags = {
 	crc16 => 0,
 	crc8 => 0,
 	crcccitt => 0,
-	mode => 1,
-	gid => 1,
-	uid => 1,
-	nlink => 1,
-	inode => 1,
-	mtime =>1,
-	atime =>1,
-	ctime => 1,
-	size => 1,
-	blocks => 1,
-	dev => 1,
+	mode => 0,
+	gid => 0,
+	uid => 0,
+	nlink => 0,
+	inode => 0,
+	mtime =>0,
+	atime =>0,
+	ctime => 0,
+	size => 0,
+	blocks => 0,
+	dev => 0,
 	
 };
 
 my $config = new Config::Simple('labrador.conf') or die "O arquivo de configuração labrador.conf não foi encontrado.";
 
 my %conf = $config->vars();
-#my $dir = $conf->param('dir');
-#my $dir = shift or die "especifique dir";
-#say "lendo dir '$dir'... ";
-while ((my $key, my $value) = each(%conf)){
-	if($key =~ m/^[diretorio\.]/){
-		my $dir = $key;
+
+my $valor;
+while ((my $chave, $valor) = each(%conf)){
+	if($chave =~ m/^[diretorio\.]/){
+		my $dir = $chave;
 		$dir =~ s/\w+\.//;
-		#say $dir ." = ". $value;
 
 		find \&traverse, $dir;
-
-		sub traverse{
-			#say $File::Find::name;
-			return if -d $File::Find::name;
-
-			my $container = Labrador::Container->new($File::Find::name, $flags);
-		}
 	}
 }
 
+sub traverse{
+	#say $File::Find::name;
+	return if -d $File::Find::name;
+	
+	my $container = Labrador::Container->new($File::Find::name, $flags, $valor);
+}

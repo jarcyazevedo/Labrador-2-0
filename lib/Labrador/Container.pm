@@ -24,7 +24,7 @@ use Class::XSAccessor {
 };
 
 sub new {
-	my ($class, $filename, $flags) = @_;
+	my ($class, $filename, $flags, $dir_flag) = @_;
 	my $self = bless {}, $class;
 
 	say "lendo arquivo '$filename'... ";
@@ -34,6 +34,9 @@ sub new {
 	return if $@;
 
 	binmode ARQ;
+
+	# Atualizando as flags para cada arquivo
+	atualiza_flags ($flags, $dir_flag);
 
 	if ($flags->{md5}){
 		my $hash = Digest::MD5->new->addfile(*ARQ)->hexdigest;
@@ -151,6 +154,31 @@ sub new {
 	}	
 	close ARQ;
 
+}
+
+# atualiza as flags ativas para cada dir especificado no .conf
+sub atualiza_flags{
+	my ($flags, $dir_flag) = @_;
+	
+	my @valores = split (",", $dir_flag);
+	if ($valores[0] ne "!"){
+		foreach my $key (%$flags){
+			$flags->{$key} = 0;
+		}
+		foreach my $valor(@valores){
+			$flags->{$valor} = 1;
+		}
+	}
+	else{
+		foreach my $key (%$flags){
+			$flags->{$key} = 1;
+		}
+		shift @valores;
+		foreach my $valor(@valores){
+			$flags->{$valor} = 0;
+		}
+	}
+	
 }
 
 1;
