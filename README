@@ -1,0 +1,22 @@
+TODO
+
+
+-Base de hashs de sistemas conhecidos
+
+-forma de armazenamento dos hash
+
+-definir campos identificadores dos hashs
+
+-definir forma de acesso externo
+
+-definir forma de armazenamento de hosts diferentes
+
+-terminar .conf
+
+
+Problemas
+
+
+-não existe controle dos hashs posteriormente mudados posteriormente a uma alteração
+
+-rever todos os algoritmos de hash
