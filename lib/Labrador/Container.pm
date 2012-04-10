@@ -29,7 +29,7 @@ sub new {
 
 	say "lendo arquivo '$filename'... ";
 	eval {
-		open ARQ, '<', $File::Find::name;
+		open ARQ, '<', $File::Find::name or dir $!;
 	};
 	return if $@;
 
