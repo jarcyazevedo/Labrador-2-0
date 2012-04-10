@@ -38,7 +38,7 @@ my $flags = {
 	
 };
 
-my $config = new Config::Simple('labrador.conf') or die "O arquivo de configuração labrador.conf não foi encontrado.";
+my $config = new Config::Simple('labrador.conf') or die "O arquivo de configuração labrador.conf não foi encontrado: $!";
 
 my %conf = $config->vars();
 
